@@ -1,12 +1,9 @@
-import { Upload } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
-import Navbar from "./Navbar";
-import Login from "./Login";
-
-import { storage, db } from "../firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc, serverTimestamp, onSnapshot } from "firebase/firestore";
+import { useAuth } from '../contexts/AuthContext';
+import Login from './Login';
+import { Upload, FileText, Sparkles, Zap, CheckCircle } from 'lucide-react';
+import { useState } from 'react';
+// 👇 NY IMPORT
+import AiForm from './AiForm.jsx';
 
 function Homepage() {
   const { currentUser } = useAuth();
@@ -150,35 +147,77 @@ function Homepage() {
               </div>
             </section>
 
-            {/* ---------------- UPLOADEDE FILER ---------------- */}
-            <section className="max-w-3xl mx-auto mt-10">
-              <h2 className="text-2xl font-bold mb-4">Uploaded filer</h2>
-
-              {uploadedFiles.length === 0 ? (
-                <p className="text-gray-600">Ingen filer uploadet endnu.</p>
-              ) : (
-                <ul className="space-y-3">
-                  {uploadedFiles.map((file) => (
-                    <li
-                      key={file.id}
-                      className="p-4 bg-white rounded-xl shadow border flex justify-between items-center"
-                    >
-                      <span className="font-medium">{file.filename}</span>
-
-                      <a
-                        href={file.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-indigo-600 font-medium hover:underline"
-                      >
-                        Åbn
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
+            {/* 👇 NY SEKTION: AI form til at generere ansøgning */}
+            <section className="max-w-3xl mx-auto">
+              <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Generér din ansøgning</h3>
+                <p className="text-gray-600 mb-6">
+                  Udfyld felterne herunder – så skriver AI'en en skræddersyet ansøgning til dig.
+                </p>
+                <AiForm />
+              </div>
             </section>
 
+            {/* Features Section */}
+            <section className="grid md:grid-cols-3 gap-6 mt-16">
+              <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100">
+                <div className="bg-indigo-100 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                  <Zap className="w-6 h-6 text-indigo-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Lynhurtig AI</h3>
+                <p className="text-gray-600">
+                  Generer professionelle ansøgninger på under 30 sekunder
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100">
+                <div className="bg-purple-100 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                  <FileText className="w-6 h-6 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Skræddersyet Indhold</h3>
+                <p className="text-gray-600">
+                  AI'en tilpasser ansøgningen til jobbets specifikke krav
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100">
+                <div className="bg-green-100 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                  <CheckCircle className="w-6 h-6 text-green-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Professionel Kvalitet</h3>
+                <p className="text-gray-600">
+                  Ansøgninger skrevet af AI trænet på tusindvis af succesfulde eksempler
+                </p>
+              </div>
+            </section>
+
+            {/* How It Works */}
+            <section className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl p-10 mt-12">
+              <h3 className="text-3xl font-bold text-center text-gray-900 mb-8">Sådan virker det</h3>
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="text-center space-y-3">
+                  <div className="w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto">
+                    1
+                  </div>
+                  <h4 className="text-xl font-semibold text-gray-900">Upload CV</h4>
+                  <p className="text-gray-600">Upload dit CV, så analyserer AI'en dine kompetencer</p>
+                </div>
+                <div className="text-center space-y-3">
+                  <div className="w-16 h-16 bg-purple-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto">
+                    2
+                  </div>
+                  <h4 className="text-xl font-semibold text-gray-900">Angiv jobkrav</h4>
+                  <p className="text-gray-600">Indsæt jobbeskrivelsen eller nøglekrav</p>
+                </div>
+                <div className="text-center space-y-3">
+                  <div className="w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto">
+                    3
+                  </div>
+                  <h4 className="text-xl font-semibold text-gray-900">Få din ansøgning</h4>
+                  <p className="text-gray-600">AI'en genererer en professionel, skræddersyet ansøgning</p>
+                </div>
+              </div>
+            </section>
           </div>
         ) : (
           <Login />
@@ -189,3 +228,4 @@ function Homepage() {
 }
 
 export default Homepage;
+
