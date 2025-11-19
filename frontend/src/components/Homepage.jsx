@@ -4,64 +4,28 @@ import { Upload, FileText, Sparkles, Zap, CheckCircle } from 'lucide-react';
 import { useState } from 'react';
 // 👇 NY IMPORT
 import AiForm from './AiForm.jsx';
+import Navbar from './Navbar.jsx';
 
 function Homepage() {
-  const { currentUser } = useAuth();
-
+  const { currentUser, logout } = useAuth();
   const [isDragging, setIsDragging] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-
-  // ------------------- FILE UPLOAD LOGIK -------------------
-  const handleFile = async (file) => {
-    if (!file) return;
-
-    const allowed = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ];
-
-    if (!allowed.includes(file.type)) {
-      alert("Kun PDF, DOC og DOCX er tilladt.");
-      return;
-    }
-
-    try {
-      console.log("Uploader fil:", file.name);
-
-      // 1. Upload til Storage
-      const fileRef = ref(storage, `cv/${Date.now()}_${file.name}`);
-      await uploadBytes(fileRef, file);
-
-      // 2. Hent URL
-      const url = await getDownloadURL(fileRef);
-
-      // 3. Gem metadata i Firestore
-      await addDoc(collection(db, "cv"), {
-        filename: file.name,
-        url,
-        createdAt: serverTimestamp(),
-        uid: currentUser.uid,
-      });
-
-      alert("Upload færdig!");
-    } catch (err) {
-      console.error("Fejl under upload:", err);
-      alert("Upload fejlede");
-    }
-  };
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
-    handleFile(file);
+    if (file) {
+      console.log('Fil uploadet:', file.name);
+      // Her kan du tilføje din upload-logik
+    }
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
-
     const file = e.dataTransfer.files?.[0];
-    handleFile(file);
+    if (file) {
+      console.log('Fil droppet:', file.name);
+      // Her kan du tilføje din upload-logik
+    }
   };
 
   const handleDragOver = (e) => {
@@ -73,39 +37,33 @@ function Homepage() {
     setIsDragging(false);
   };
 
-  // ------------------- REAL-TIME HENTNING AF CV FILER -------------------
-  useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "cv"), (snapshot) => {
-      const files = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      // Kun filer uploadet af den nuværende bruger
-      const userFiles = files.filter((f) => f.uid === currentUser?.uid);
-
-      setUploadedFiles(userFiles);
-    });
-
-    return () => unsubscribe();
-  }, [currentUser]);
-
-  // ------------------- UI -------------------
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
       <Navbar />
-
+      
       <main className="flex-1 max-w-6xl w-full mx-auto py-12 px-8">
         {currentUser ? (
           <div className="space-y-12">
+            {/* Hero Section */}
+            <section className="text-center space-y-4">
+              <div className="inline-block bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-semibold mb-2">
+                ✨ AI-Drevet Teknologi
+              </div>
+              <h2 className="text-5xl font-bold text-gray-900 leading-tight">
+                Skab den perfekte <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">ansøgning</span>
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Upload dit CV og lad vores AI generere skræddersyede jobansøgninger på få sekunder
+              </p>
+            </section>
 
-            {/* ---------------- UPLOAD CV ---------------- */}
+            {/* Upload Section */}
             <section className="max-w-3xl mx-auto">
-              <div
+              <div 
                 className={`relative border-3 border-dashed rounded-2xl p-12 transition-all duration-300 ${
-                  isDragging
-                    ? "border-indigo-500 bg-indigo-50 scale-105"
-                    : "border-gray-300 bg-white hover:border-indigo-400 hover:bg-indigo-50/50"
+                  isDragging 
+                    ? 'border-indigo-500 bg-indigo-50 scale-105' 
+                    : 'border-gray-300 bg-white hover:border-indigo-400 hover:bg-indigo-50/50'
                 }`}
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
@@ -118,15 +76,13 @@ function Homepage() {
                   onChange={handleFileUpload}
                   className="hidden"
                 />
-
-                <label
-                  htmlFor="cv-upload"
+                <label 
+                  htmlFor="cv-upload" 
                   className="flex flex-col items-center gap-4 cursor-pointer"
                 >
                   <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 rounded-2xl shadow-lg">
                     <Upload className="w-12 h-12 text-white" />
                   </div>
-
                   <div className="text-center space-y-2">
                     <h3 className="text-2xl font-bold text-gray-900">Upload dit CV</h3>
                     <p className="text-gray-600">
@@ -136,13 +92,12 @@ function Homepage() {
                       Understøtter PDF, DOC, DOCX (maks. 10MB)
                     </p>
                   </div>
-
-                  <label
-                    htmlFor="cv-upload"
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 cursor-pointer"
+                  <button 
+                    type="button"
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
                   >
                     Vælg fil
-                  </label>
+                  </button>
                 </label>
               </div>
             </section>
@@ -223,9 +178,12 @@ function Homepage() {
           <Login />
         )}
       </main>
+      
+      <footer className="bg-white border-t border-gray-200 py-8 px-8 text-center text-gray-600">
+        <p className="text-sm">&copy; 2025 AI Ansøgningsgenerator. Alle rettigheder forbeholdes.</p>
+      </footer>
     </div>
   );
 }
 
 export default Homepage;
-

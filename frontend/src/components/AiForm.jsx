@@ -59,7 +59,7 @@ function AiForm() {
           <input
             type="text"
             className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            placeholder="Morten Friis Davidsen"
+            placeholder=""
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
           />
@@ -72,7 +72,7 @@ function AiForm() {
           <input
             type="text"
             className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            placeholder="Datamatiker / Junior udvikler"
+            placeholder=""
             value={jobTitle}
             onChange={(e) => setJobTitle(e.target.value)}
           />
@@ -85,7 +85,7 @@ function AiForm() {
           <input
             type="text"
             className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            placeholder="Diaco A/S"
+            placeholder=""
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
           />
@@ -98,7 +98,7 @@ function AiForm() {
           <input
             type="text"
             className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            placeholder="React, Node, Firebase, teamwork…"
+            placeholder=""
             value={skills}
             onChange={(e) => setSkills(e.target.value)}
           />
@@ -112,7 +112,7 @@ function AiForm() {
         <textarea
           className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           rows={4}
-          placeholder="Skriv kort om din erfaring, studie, tidligere jobs, projekter osv."
+          placeholder=""
           value={experience}
           onChange={(e) => setExperience(e.target.value)}
         />
@@ -125,7 +125,7 @@ function AiForm() {
         <textarea
           className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
           rows={3}
-          placeholder="Fx arbejdstider, motivation, særlige ønsker, referencer osv."
+          placeholder=""
           value={extraInfo}
           onChange={(e) => setExtraInfo(e.target.value)}
         />
