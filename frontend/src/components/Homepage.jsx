@@ -1,8 +1,25 @@
+import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import Login from './Login';
+import Navbar from './Navbar.jsx';
 import { Upload, FileText, Sparkles, Zap, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
-// 👇 NY IMPORT
+
+// Firebase imports
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from "firebase/storage";
+
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  onSnapshot
+} from "firebase/firestore";
+
+import { db, storage } from "../firebase";
+
 import AiForm from './AiForm.jsx';
 
 function Homepage() {
@@ -27,16 +44,11 @@ function Homepage() {
     }
 
     try {
-      console.log("Uploader fil:", file.name);
-
-      // 1. Upload til Storage
       const fileRef = ref(storage, `cv/${Date.now()}_${file.name}`);
       await uploadBytes(fileRef, file);
 
-      // 2. Hent URL
       const url = await getDownloadURL(fileRef);
 
-      // 3. Gem metadata i Firestore
       await addDoc(collection(db, "cv"), {
         filename: file.name,
         url,
@@ -73,17 +85,17 @@ function Homepage() {
     setIsDragging(false);
   };
 
-  // ------------------- REAL-TIME HENTNING AF CV FILER -------------------
+  // ------------------- REAL-TIME FILER -------------------
   useEffect(() => {
+    if (!currentUser) return;
+
     const unsubscribe = onSnapshot(collection(db, "cv"), (snapshot) => {
       const files = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
-      // Kun filer uploadet af den nuværende bruger
-      const userFiles = files.filter((f) => f.uid === currentUser?.uid);
-
+      const userFiles = files.filter((f) => f.uid === currentUser.uid);
       setUploadedFiles(userFiles);
     });
 
@@ -147,7 +159,7 @@ function Homepage() {
               </div>
             </section>
 
-            {/* 👇 NY SEKTION: AI form til at generere ansøgning */}
+            {/* AI form */}
             <section className="max-w-3xl mx-auto">
               <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100">
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Generér din ansøgning</h3>
@@ -158,66 +170,6 @@ function Homepage() {
               </div>
             </section>
 
-            {/* Features Section */}
-            <section className="grid md:grid-cols-3 gap-6 mt-16">
-              <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100">
-                <div className="bg-indigo-100 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
-                  <Zap className="w-6 h-6 text-indigo-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Lynhurtig AI</h3>
-                <p className="text-gray-600">
-                  Generer professionelle ansøgninger på under 30 sekunder
-                </p>
-              </div>
-
-              <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100">
-                <div className="bg-purple-100 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
-                  <FileText className="w-6 h-6 text-purple-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Skræddersyet Indhold</h3>
-                <p className="text-gray-600">
-                  AI'en tilpasser ansøgningen til jobbets specifikke krav
-                </p>
-              </div>
-
-              <div className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100">
-                <div className="bg-green-100 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Professionel Kvalitet</h3>
-                <p className="text-gray-600">
-                  Ansøgninger skrevet af AI trænet på tusindvis af succesfulde eksempler
-                </p>
-              </div>
-            </section>
-
-            {/* How It Works */}
-            <section className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl p-10 mt-12">
-              <h3 className="text-3xl font-bold text-center text-gray-900 mb-8">Sådan virker det</h3>
-              <div className="grid md:grid-cols-3 gap-8">
-                <div className="text-center space-y-3">
-                  <div className="w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto">
-                    1
-                  </div>
-                  <h4 className="text-xl font-semibold text-gray-900">Upload CV</h4>
-                  <p className="text-gray-600">Upload dit CV, så analyserer AI'en dine kompetencer</p>
-                </div>
-                <div className="text-center space-y-3">
-                  <div className="w-16 h-16 bg-purple-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto">
-                    2
-                  </div>
-                  <h4 className="text-xl font-semibold text-gray-900">Angiv jobkrav</h4>
-                  <p className="text-gray-600">Indsæt jobbeskrivelsen eller nøglekrav</p>
-                </div>
-                <div className="text-center space-y-3">
-                  <div className="w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto">
-                    3
-                  </div>
-                  <h4 className="text-xl font-semibold text-gray-900">Få din ansøgning</h4>
-                  <p className="text-gray-600">AI'en genererer en professionel, skræddersyet ansøgning</p>
-                </div>
-              </div>
-            </section>
           </div>
         ) : (
           <Login />
@@ -228,4 +180,3 @@ function Homepage() {
 }
 
 export default Homepage;
-

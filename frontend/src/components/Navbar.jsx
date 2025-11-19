@@ -37,9 +37,9 @@ export default function Navbar() {
             </div>
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-white via-purple-200 to-white bg-clip-text text-transparent">
-                Ansøgningsgenerator
+                Ansøgningsværktøj
               </h1>
-              <p className="text-xs text-purple-300 font-medium">Powered by AI</p>
+              <p className="text-xs text-purple-300 font-medium">Den nemme vej til en stærk ansøgning </p>
             </div>
           </button>
 
@@ -113,7 +113,10 @@ export default function Navbar() {
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-white/90 hover:text-white hover:bg-white/10 transition-all duration-200 group"
                         >
                           <User className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                          <span className="text-sm font-medium">Rediger Profil</span>
+                          <Link to="/profil" className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 rounded-md">
+                            <span className="material-icons">person</span>
+                              Rediger Profil
+                          </Link>
                         </button>
 
                         <button
