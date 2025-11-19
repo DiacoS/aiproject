@@ -3,32 +3,33 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword,
   signOut,
-  onAuthStateChanged 
+  onAuthStateChanged
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 
-const AuthContext = createContext({});
+// Giv et korrekt default value – IKKE tomt objekt
+const AuthContext = createContext({
+  currentUser: null,
+  signup: () => {},
+  login: () => {},
+  logout: () => {}
+});
 
+// Custom hook
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth skal bruges inde i en AuthProvider');
-  }
-  return context;
+  return useContext(AuthContext);
 };
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Tilmeld bruger
+  // Opret bruger
   const signup = async (email, password) => {
-    // Opret bruger i Authentication
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    
-    // Gem brugerdata i Firestore
+
     try {
       await setDoc(doc(db, 'users', user.uid), {
         email: user.email,
@@ -36,10 +37,9 @@ export const AuthProvider = ({ children }) => {
         uid: user.uid
       });
     } catch (error) {
-      console.error('Fejl ved gem af brugerdata i Firestore:', error);
-      // Fortsæt selvom Firestore fejler - brugeren er allerede oprettet i Authentication
+      console.error("Fejl ved gem af brugerdata i Firestore:", error);
     }
-    
+
     return userCredential;
   };
 
@@ -53,27 +53,25 @@ export const AuthProvider = ({ children }) => {
     return signOut(auth);
   };
 
-  // Lyt til ændringer i authentication state
+  // Auth lytter
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsub = onAuthStateChanged(auth, user => {
       setCurrentUser(user);
       setLoading(false);
     });
-
-    return unsubscribe;
+    return unsub;
   }, []);
 
-  const value = {
-    currentUser,
-    signup,
-    login,
-    logout
-  };
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        signup,
+        login,
+        logout
+      }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );
 };
-

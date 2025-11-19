@@ -1,0 +1,21 @@
+{
+  "name": "aiproject",
+  "version": "1.0.0",
+  "main": "firebase.config.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DiacoS/aiproject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DiacoS/aiproject/issues"
+  },
+  "homepage": "https://github.com/DiacoS/aiproject#readme",
+  "description": ""
+}
