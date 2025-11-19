@@ -2,7 +2,6 @@
   "name": "aiproject",
   "version": "1.0.0",
   "main": "firebase.config.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,5 +16,8 @@
     "url": "https://github.com/DiacoS/aiproject/issues"
   },
   "homepage": "https://github.com/DiacoS/aiproject#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "openai": "^6.9.1"
+  }
 }
