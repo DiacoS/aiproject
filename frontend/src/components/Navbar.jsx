@@ -1,6 +1,7 @@
 import { useAuth } from '../contexts/AuthContext';
 import { Sparkles, FileText, Home, LogOut, Menu, X, Settings, User, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const { currentUser, logout } = useAuth();
@@ -15,8 +16,10 @@ export default function Navbar() {
     }
   };
 
+  const navigate = useNavigate();
+
   const navigateTo = (path) => {
-    window.location.href = path;
+    navigate(path);
     setMobileMenuOpen(false);
   };
 
@@ -83,11 +86,20 @@ export default function Navbar() {
                     className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20 hover:bg-white/15 transition-all duration-200 group"
                   >
                     <div className="relative">
-                      <div className="w-9 h-9 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center shadow-lg ring-2 ring-white/20">
-                        <span className="text-sm font-bold text-white">
-                          {currentUser.email.charAt(0).toUpperCase()}
-                        </span>
+                      <div className="w-9 h-9 rounded-full overflow-hidden shadow-lg ring-2 ring-white/20 bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
+                        {currentUser.photoURL ? (
+                          <img
+                            src={currentUser.photoURL}
+                            alt="Profil"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-sm font-bold text-white">
+                            {currentUser.email.charAt(0).toUpperCase()}
+                          </span>
+                        )}
                       </div>
+
                       <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-slate-900"></div>
                     </div>
                     <span className="text-sm font-medium text-white/90 hidden lg:inline">
@@ -105,20 +117,14 @@ export default function Navbar() {
                       </div>
                       
                       <div className="py-2">
-                        <button
-                          onClick={() => {
-                            navigateTo('/profil');
-                            setDropdownOpen(false);
-                          }}
+                        <Link
+                          to="/profile"
+                          onClick={() => setDropdownOpen(false)}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-white/90 hover:text-white hover:bg-white/10 transition-all duration-200 group"
                         >
                           <User className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                          <Link to="/profil" className="flex items-center gap-2 px-4 py-2 hover:bg-white/10 rounded-md">
-                            <span className="material-icons">person</span>
-                              Rediger Profil
-                          </Link>
-                        </button>
-
+                          <span className="text-sm font-medium">Rediger profil</span>
+                        </Link>
                         <button
                           onClick={() => {
                             navigateTo('/indstillinger');
@@ -133,7 +139,10 @@ export default function Navbar() {
 
                       <div className="border-t border-white/10 py-2">
                         <button
-                          onClick={handleLogout}
+                          onClick={async () => {
+                            await handleLogout();
+                            navigate('/');
+                          }}
                           className="w-full flex items-center gap-3 px-4 py-2.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all duration-200 group"
                         >
                           <LogOut className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

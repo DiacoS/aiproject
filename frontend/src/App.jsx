@@ -3,6 +3,9 @@ import { Routes, Route } from "react-router-dom";
 import Homepage from "./components/Homepage.jsx";
 import Cv from "./components/Cv.jsx";
 import Applications from "./components/Applications.jsx";
+import Profile from "./components/settings/Profile.jsx";
+import { loadInitialTheme } from "./components/settings/theme";
+loadInitialTheme();
 
 export default function App() {
   return (
@@ -10,6 +13,7 @@ export default function App() {
       <Route path="/" element={<Homepage />} />
       <Route path="/cv" element={<Cv />} />
       <Route path="/ansøgninger" element={<Applications />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   );
 }
