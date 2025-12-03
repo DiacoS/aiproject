@@ -1,176 +1,145 @@
-import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 import Login from './Login';
 import Navbar from './Navbar.jsx';
-import { Upload, FileText, Sparkles, Zap, CheckCircle } from 'lucide-react';
-
-// Firebase imports
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
-
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  onSnapshot
-} from "firebase/firestore";
-
-import { db, storage } from "../firebase";
+import { 
+  Sparkles, 
+  Zap, 
+  Shield, 
+  Clock, 
+  FileText, 
+  CheckCircle2,
+  ArrowRight,
+  TrendingUp,
+  Users,
+  Target
+} from 'lucide-react';
 
 import AiForm from './AiForm.jsx';
 
 function Homepage() {
   const { currentUser } = useAuth();
 
-  const [isDragging, setIsDragging] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-
-  // ------------------- FILE UPLOAD LOGIK -------------------
-  const handleFile = async (file) => {
-    if (!file) return;
-
-    const allowed = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ];
-
-    if (!allowed.includes(file.type)) {
-      alert("Kun PDF, DOC og DOCX er tilladt.");
-      return;
-    }
-
-    try {
-      const fileRef = ref(storage, `cv/${Date.now()}_${file.name}`);
-      await uploadBytes(fileRef, file);
-
-      const url = await getDownloadURL(fileRef);
-
-      await addDoc(collection(db, "cv"), {
-        filename: file.name,
-        url,
-        createdAt: serverTimestamp(),
-        uid: currentUser.uid,
-      });
-
-      alert("Upload færdig!");
-    } catch (err) {
-      console.error("Fejl under upload:", err);
-      alert("Upload fejlede");
-    }
-  };
-
-  const handleFileUpload = (e) => {
-    const file = e.target.files?.[0];
-    handleFile(file);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const file = e.dataTransfer.files?.[0];
-    handleFile(file);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  // ------------------- REAL-TIME FILER -------------------
-  useEffect(() => {
-    if (!currentUser) return;
-
-    const unsubscribe = onSnapshot(collection(db, "cv"), (snapshot) => {
-      const files = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      const userFiles = files.filter((f) => f.uid === currentUser.uid);
-      setUploadedFiles(userFiles);
-    });
-
-    return () => unsubscribe();
-  }, [currentUser]);
-
   // ------------------- UI -------------------
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
 
-      <main className="flex-1 max-w-6xl w-full mx-auto py-12 px-8">
+      <main className="flex-1">
         {currentUser ? (
-          <div className="space-y-12">
-
-            {/* ---------------- UPLOAD CV ---------------- */}
-            <section className="max-w-3xl mx-auto">
-              <div
-                className={`relative border-3 border-dashed rounded-2xl p-12 transition-all duration-300 ${
-                  isDragging
-                    ? "border-indigo-500 bg-indigo-50 scale-105"
-                    : "border-gray-300 bg-white hover:border-indigo-400 hover:bg-indigo-50/50"
-                }`}
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-              >
-                <input
-                  type="file"
-                  id="cv-upload"
-                  accept=".pdf,.doc,.docx"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-
-                <label
-                  htmlFor="cv-upload"
-                  className="flex flex-col items-center gap-4 cursor-pointer"
-                >
-                  <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 rounded-2xl shadow-lg">
-                    <Upload className="w-12 h-12 text-white" />
+          <>
+            {/* Hero Section */}
+            <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-900 to-purple-900">
+              <div className="absolute inset-0 bg-grid-pattern [mask-image:linear-gradient(0deg,white,transparent)]"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent"></div>
+              
+              <div className="relative max-w-7xl mx-auto px-6 py-20 md:py-28 lg:py-32">
+                <div className="max-w-4xl mx-auto text-center">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-6">
+                    <Sparkles className="w-4 h-4 text-yellow-400" />
+                    <span className="text-sm font-medium text-white/90">AI-drevet ansøgningsgenerering</span>
                   </div>
+                  
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                    Skriv den perfekte
+                    <span className="block bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                      jobansøgning på sekunder
+                    </span>
+                  </h1>
+                  
+                  <p className="text-xl md:text-2xl text-white/80 mb-8 max-w-2xl mx-auto leading-relaxed">
+                    Lad AI'en skrive professionelle, skræddersyede ansøgninger baseret på dit CV og jobopslaget. 
+                    Spar timer og øg dine chancer for at få drømmejobbet.
+                  </p>
 
-                  <div className="text-center space-y-2">
-                    <h3 className="text-2xl font-bold text-gray-900">Upload dit CV</h3>
-                    <p className="text-gray-600">
-                      Træk og slip din fil her, eller klik for at vælge
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Understøtter PDF, DOC, DOCX (maks. 10MB)
-                    </p>
+                  <div className="flex flex-wrap items-center justify-center gap-4 text-white/70 text-sm">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-green-400" />
+                      <span>100% skræddersyet</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-green-400" />
+                      <span>Professionel kvalitet</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-green-400" />
+                      <span>Hurtig generering</span>
+                    </div>
                   </div>
+                </div>
+              </div>
 
-                  <label
-                    htmlFor="cv-upload"
-                    className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 cursor-pointer"
-                  >
-                    Vælg fil
-                  </label>
-                </label>
+              {/* Decorative elements */}
+              <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"></div>
+              <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl"></div>
+            </section>
+
+         
+
+            {/* CTA Section - Form */}
+            <section className="py-16 md:py-20 bg-white">
+              <div className="max-w-5xl mx-auto px-6">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                    Generér din første ansøgning nu
+                  </h2>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Udfyld formularen nedenfor, og få en professionel ansøgning på sekunder
+                  </p>
+                </div>
+
+                <div className="bg-white rounded-3xl shadow-xl border border-gray-200 p-8 md:p-10">
+                  <div className="mb-8 pb-8 border-b border-gray-200">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+                        <Sparkles className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-bold text-gray-900">AI Ansøgningsgenerator</h3>
+                        <p className="text-gray-600 text-sm">Skræddersyet til dit næste job</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <AiForm />
+                </div>
               </div>
             </section>
 
-            {/* AI form */}
-            <section className="max-w-3xl mx-auto">
-              <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Generér din ansøgning</h3>
-                <p className="text-gray-600 mb-6">
-                  Udfyld felterne herunder – så skriver AI'en en skræddersyet ansøgning til dig.
-                </p>
-                <AiForm />
+            {/* Stats Section */}
+            <section className="py-16 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+              <div className="max-w-7xl mx-auto px-6">
+                <div className="text-center mb-12">
+                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                    Om projektet
+                  </h3>
+                  <p className="text-gray-600">
+                    Udviklet som hovedopgave til datamatiker eksamen
+                  </p>
+                </div>
+                <div className="grid md:grid-cols-3 gap-8 text-center">
+                  <div>
+                    <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                      Diaco & Morten
+                    </div>
+                    <div className="text-gray-600 font-medium">Udviklere bag projektet</div>
+                  </div>
+                  <div>
+                    <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                      Hovedopgave
+                    </div>
+                    <div className="text-gray-600 font-medium">Datamatiker eksamen 2024</div>
+                  </div>
+                  <div>
+                    <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent mb-2">
+                      AI & Firebase
+                    </div>
+                    <div className="text-gray-600 font-medium">Moderne teknologi stack</div>
+                  </div>
+                </div>
               </div>
             </section>
-
-          </div>
+          </>
         ) : (
           <Login />
         )}

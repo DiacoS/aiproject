@@ -13,8 +13,7 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID
 };
 
-console.log("APIKEY = [" + import.meta.env.VITE_FIREBASE_API_KEY + "]");
-console.log("CONFIG = ", firebaseConfig);
+console.log("Firebase config loaded for backend");
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
