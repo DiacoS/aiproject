@@ -18,6 +18,18 @@
     animation: fade-in 0.3s ease-out;
   }
 
+  @keyframes progress {
+    0% {
+      transform: translateX(-100%);
+    }
+    50% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
   .bg-grid-pattern {
     background-image: 
       linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),

@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import OpenAI from "openai";
+import { readCvContent } from "./readCv.js";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -15,7 +16,22 @@ export async function generateApplication(data) {
     experience,
     skills,
     extraInfo,
+    cvUrl,
   } = data;
+
+  // Læs CV-indhold hvis CV URL er angivet
+  let cvContent = null;
+  if (cvUrl) {
+    console.log("Læser CV fra URL:", cvUrl);
+    cvContent = await readCvContent(cvUrl);
+    if (cvContent) {
+      console.log("CV indhold læst succesfuldt. Længde:", cvContent.length, "tegn");
+    } else {
+      console.log("Kunne ikke læse CV-indhold");
+    }
+  } else {
+    console.log("Ingen CV URL angivet");
+  }
 
   const prompt = `
 Du er en professionel tekstforfatter, der skriver jobansøgninger på dansk.
@@ -26,7 +42,10 @@ Navn: ${fullName || "Ikke angivet"}
 Stilling der søges: ${jobTitle || "Ikke angivet"}
 Virksomhed: ${companyName || "Ikke angivet"}
 
-Erfaring:
+${cvContent ? `CV-indhold:
+${cvContent}
+
+` : ""}Erfaring:
 ${experience || "Ikke angivet"}
 
 Kompetencer:
@@ -41,6 +60,7 @@ Krav til ansøgningen:
 - Max ca. 400–500 ord
 - Struktureret med indledning, midterafsnit og afslutning
 - Ingen overskrifter, bare brødtekst
+- Brug informationer fra CV'et hvis det er relevant
   `;
 
   const response = await client.responses.create({

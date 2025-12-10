@@ -138,6 +138,43 @@ function AiForm() {
 
   return (
     <div className="space-y-6">
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl">
+            <div className="flex flex-col items-center gap-6">
+              {/* Animated Icon */}
+              <div className="relative">
+                <div className="w-20 h-20 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl flex items-center justify-center animate-pulse">
+                  <Sparkles className="w-10 h-10 text-white" />
+                </div>
+                <div className="absolute -inset-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl opacity-20 blur-xl animate-pulse"></div>
+              </div>
+              
+              {/* Loading Text */}
+              <div className="text-center space-y-2">
+                <h3 className="text-2xl font-bold text-gray-900">
+                  Genererer din ansøgning
+                </h3>
+                <p className="text-gray-600">
+                  AI'en læser dit CV og skriver en skræddersyet ansøgning...
+                </p>
+              </div>
+              
+              {/* Progress Bar */}
+              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-full animate-[progress_2s_ease-in-out_infinite]"></div>
+              </div>
+              
+              {/* Tips */}
+              <div className="text-sm text-gray-500 text-center">
+                <p>💡 Dette tager typisk 5-10 sekunder</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* CV Valg */}
       {cvFiles.length > 0 ? (
         <div className="space-y-2">
