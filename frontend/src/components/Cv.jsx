@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import Login from './Login';
 import Navbar from './Navbar.jsx';
 import { Upload, FileText, Trash2 } from 'lucide-react';
+import { Link } from "react-router-dom";
 
 // Firebase imports
 import {
@@ -117,13 +118,21 @@ export default function Cv() {
       where("uid", "==", currentUser.uid)
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const files = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setUploadedFiles(files);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const files = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setUploadedFiles(files);
+      },
+      (err) => {
+        console.error("onSnapshot error (Cv/cv):", err);
+        // valgfrit:
+        // alert("Kunne ikke hente dine CV'er. Tjek Firestore rules.");
+      }
+    );
 
     return () => unsubscribe();
   }, [currentUser]);
@@ -141,6 +150,14 @@ export default function Cv() {
               <p className="text-gray-600">
                 Upload og administrer dine CV'er her. Du kan vælge et CV når du genererer en ansøgning.
               </p>
+              <div className="mt-6 flex gap-3">
+                <Link
+                  to="/cv/builder"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+                >
+                  Generér nyt CV
+                </Link>
+              </div>
             </div>
 
             {/* ---------------- UPLOAD CV ---------------- */}

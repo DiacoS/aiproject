@@ -5,6 +5,8 @@ import Cv from "./components/Cv.jsx";
 import Applications from "./components/Applications.jsx";
 import Profile from "./components/settings/Profile.jsx";
 import { loadInitialTheme } from "./components/settings/theme";
+import CVBuilderPage from "./pages/CVBuilderPage";
+
 loadInitialTheme();
 
 export default function App() {
@@ -14,6 +16,7 @@ export default function App() {
       <Route path="/cv" element={<Cv />} />
       <Route path="/ansøgninger" element={<Applications />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/cv/builder" element={<CVBuilderPage />} />
     </Routes>
   );
 }

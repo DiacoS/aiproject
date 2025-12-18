@@ -37,18 +37,26 @@ function AiForm() {
       where("uid", "==", currentUser.uid)
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const files = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setCvFiles(files);
-      
-      // Auto-select første CV hvis der er et og intet er valgt
-      if (files.length > 0 && !selectedCv) {
-        setSelectedCv(files[0].id);
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const files = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setCvFiles(files);
+
+        // Auto-select første CV hvis der er et og intet er valgt
+        if (files.length > 0 && !selectedCv) {
+          setSelectedCv(files[0].id);
+        }
+      },
+      (err) => {
+        console.error("onSnapshot error (AiForm/cv):", err);
+        // valgfrit: vis til UI
+        // setError("Kunne ikke hente dine CV'er (mangler adgang).");
       }
-    });
+    );
 
     return () => unsubscribe();
   }, [currentUser, selectedCv]);

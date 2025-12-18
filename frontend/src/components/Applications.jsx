@@ -29,13 +29,24 @@ export default function Applications() {
       orderBy("timestamp", "desc")
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const apps = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setApplications(apps);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const apps = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setApplications(apps);
+      },
+      (err) => {
+        console.error("onSnapshot error (Applications/applications):", err);
+        // valgfrit:
+        // alert("Kunne ikke hente dine ansøgninger. Tjek Firestore rules.");
+      }
+    );
+
+    return () => unsubscribe();
+
 
     return () => unsubscribe();
   }, [currentUser]);

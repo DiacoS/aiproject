@@ -1,11 +1,14 @@
 {
   "name": "aiproject",
   "version": "1.0.0",
+  "private": true,
   "main": "firebase.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "install-all": "npm install --prefix backend && npm install --prefix frontend",
-    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
+    "dev": "concurrently -n BACKEND,FRONTEND \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend"
   },
   "repository": {
     "type": "git",
@@ -20,6 +23,7 @@
   "homepage": "https://github.com/DiacoS/aiproject#readme",
   "description": "",
   "dependencies": {
+    "firebase-admin": "^13.6.0",
     "openai": "^6.9.1"
   },
   "devDependencies": {

@@ -8,20 +8,23 @@ const router = express.Router();
 router.post("/generate", async (req, res) => {
   try {
     const data = req.body;
-    const text = await generateApplication(data);
 
-    // Gem ansøgningen i Firestore
+    // 🔹 generateApplication returnerer nu { text, meta }
+    const result = await generateApplication(data);
+    const text = result.text;
+    const meta = result.meta;
+
     const docRef = await addDoc(collection(db, "applications"), {
       ...data,
       generatedText: text,
+      meta,                               // ✅ gem meta
       timestamp: serverTimestamp(),
-      uid: data.uid || null, // Brugerens ID sendes fra frontend
+      uid: data.uid || null,
     });
 
-    res.json({ text, id: docRef.id });
+    res.json({ text, id: docRef.id, meta }); // ✅ send meta til frontend
   } catch (error) {
     console.error("Fejl i /api/generate:", error);
-
     res.status(500).json({
       error:
         error?.message ||
@@ -30,6 +33,7 @@ router.post("/generate", async (req, res) => {
     });
   }
 });
+
 
 // Endpoint til at gemme en eksisterende ansøgning
 router.post("/save", async (req, res) => {
