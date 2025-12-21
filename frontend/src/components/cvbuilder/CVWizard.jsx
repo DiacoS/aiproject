@@ -19,7 +19,6 @@ export default function CVWizard({ cv, setCv, templates, onAiSummary, onExportPd
 
     return (
         <div>
-            <h1>Generér CV</h1>
 
             <div style={{ display: "flex", gap: 8, margin: "12px 0 18px" }}>
                 {steps.map((s, i) => (

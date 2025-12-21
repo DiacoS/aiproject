@@ -125,16 +125,6 @@ export default function Navbar() {
                           <User className="w-4 h-4 group-hover:scale-110 transition-transform" />
                           <span className="text-sm font-medium">Rediger profil</span>
                         </Link>
-                        <button
-                          onClick={() => {
-                            navigateTo('/indstillinger');
-                            setDropdownOpen(false);
-                          }}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-white/90 hover:text-white hover:bg-white/10 transition-all duration-200 group"
-                        >
-                          <Settings className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
-                          <span className="text-sm font-medium">Indstillinger</span>
-                        </button>
                       </div>
 
                       <div className="border-t border-white/10 py-2">

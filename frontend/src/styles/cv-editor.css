@@ -1,0 +1,116 @@
+/* Wrapper */
+.cvStep {
+    display: grid;
+    gap: 14px;
+}
+
+.cvStepHeader {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.cvStepTitle {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.cvStepHint {
+    margin: 0;
+    font-size: 13px;
+    opacity: 0.75;
+    line-height: 1.35;
+}
+
+/* Cards */
+.cvCard {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 14px;
+    padding: 14px;
+    background: #fff;
+}
+
+.cvCardHeader {
+    margin-bottom: 10px;
+}
+
+.cvCardHeaderRow {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cvCardTitle {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.85;
+}
+
+.cvCardSub {
+    margin: 6px 0 0 0;
+    font-size: 13px;
+    opacity: 0.75;
+    line-height: 1.35;
+}
+
+/* Layout grids */
+.cvGrid {
+    display: grid;
+    gap: 12px;
+}
+
+.cvGrid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 700px) {
+    .cvGrid2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Fields */
+.cvField {
+    display: grid;
+    gap: 6px;
+}
+
+.cvLabel {
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+/* Inputs */
+.cvInput,
+.cvTextarea {
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 14px;
+    outline: none;
+    background: rgba(0, 0, 0, 0.02);
+    transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.cvTextarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.45;
+}
+
+.cvInput:focus,
+.cvTextarea:focus {
+    border-color: #6a5cff;
+    /* match accent fra preview (kan ændres) */
+    box-shadow: 0 0 0 4px rgba(106, 92, 255, 0.14);
+    background: #fff;
+}
